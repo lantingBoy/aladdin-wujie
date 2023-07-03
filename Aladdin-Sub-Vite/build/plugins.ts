@@ -9,7 +9,10 @@ import vueJsx from "@vitejs/plugin-vue-jsx";
 import eslintPlugin from "vite-plugin-eslint";
 import viteCompression from "vite-plugin-compression";
 import vueSetupExtend from "unplugin-vue-setup-extend-plus/vite";
+// import WujieVue from "wujie-vue3";
 
+// const { plugins } = WujieVue;
+// const { patchElementHook } = plugins;
 /**
  * 创建 vite 插件
  * @param viteEnv

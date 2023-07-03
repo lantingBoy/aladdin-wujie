@@ -24,7 +24,7 @@
     </div>
     <el-aside :class="{ 'not-aside': !subMenuList.length }" :style="{ width: isCollapse ? '65px' : '210px' }">
       <div class="logo flx-center">
-        <span v-show="subMenuList.length" class="logo-text">{{ isCollapse ? "G" : "Geeker Admin" }}</span>
+        <span v-show="subMenuList.length" class="logo-text">{{ isCollapse ? "G" : "恒达智控" }}</span>
       </div>
       <el-scrollbar>
         <el-menu

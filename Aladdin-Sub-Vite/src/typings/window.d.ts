@@ -11,6 +11,7 @@ declare global {
         $off: any;
       };
       props: {
+        primary: string;
         router: any;
       };
     };

@@ -15,6 +15,7 @@
       :url="microApp.url"
       :props="microAppProps"
       :after-mount="afterMount"
+      :plugins="plugins"
       width="100%"
       height="100%"
     />
@@ -25,7 +26,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onBeforeUnmount, provide, watch, computed, toRaw } from "vue";
+import { ref, onBeforeUnmount, provide, watch, computed } from "vue";
 import { storeToRefs } from "pinia";
 import { useRoute, useRouter } from "vue-router";
 
@@ -38,23 +39,33 @@ import { useAppStore } from "@/stores/modules/wujie";
 import Maximize from "./components/Maximize.vue";
 import Tabs from "@/layouts/components/Tabs/index.vue";
 import Footer from "@/layouts/components/Footer/index.vue";
-
+const { bus } = WujieVue;
 const globalStore = useGlobalStore();
-const { maximize, isCollapse, layout, tabs, footer } = storeToRefs(globalStore);
-
+const { maximize, isCollapse, layout, tabs, footer, primary } = storeToRefs(globalStore);
+// 解决vite4 样式丢失问题 参考：https://github.com/Tencent/wujie/issues/434
+const plugins = [
+  {
+    patchElementHook(element: Element, iframeWindow: Window) {
+      if (element.nodeName === "STYLE") {
+        (element as any).insertAdjacentElement = function (_: any, ele: Element) {
+          iframeWindow.document.head.appendChild(ele);
+        };
+      }
+    }
+  }
+];
 const keepAliveStore = useKeepAliveStore();
 const { keepAliveName } = storeToRefs(keepAliveStore);
 const { apps } = storeToRefs(useAppStore());
+
 const routes = useRoute();
 const router = useRouter();
 // 注入刷新页面方法
 const isRouterShow = ref(true);
 const refreshCurrentPage = (val: boolean) => (isRouterShow.value = val);
 provide("refresh", refreshCurrentPage);
-const microAppProps = computed(() => ({ router }));
-const microData = computed(() => ({
-  user: { name: "test" }
-}));
+const microAppProps = computed(() => ({ router, primary: primary.value }));
+
 const microApp = computed(() => {
   const app = apps.value.find(item => routes.path.startsWith(item.activeRule));
   if (app) {
@@ -66,7 +77,6 @@ const microApp = computed(() => {
   return null;
 });
 console.log("microApp=>>>>>", microApp.value);
-const { bus } = WujieVue;
 
 function afterMount() {
   if (microApp.value) {
@@ -76,7 +86,8 @@ function afterMount() {
       replace: true
     });
   }
-  bus.$emit("changeUser", toRaw(microData.value));
+  // if(primary.value)
+  // bus.$emit("changeThemeFn", primary.value);
 }
 watch(routes, val => {
   console.log("val: ", val.fullPath);

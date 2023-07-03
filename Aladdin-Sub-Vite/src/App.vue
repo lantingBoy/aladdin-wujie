@@ -26,7 +26,21 @@ import { onMounted } from "vue";
 
 // init language
 // const i18n = useI18n();
+
+const initAppConfigFn = () => {
+  //根据父应用参数设置子应用的主题
+  const initPrimary = window.$wujie?.props?.primary;
+  setPrimary(initPrimary);
+  // 父应用更新
+  window.$wujie?.bus.$on("changeThemeFn", function (primary: string) {
+    setPrimary(primary);
+  });
+  function setPrimary(primary: string) {
+    document.documentElement.style.setProperty("--el-color-primary", primary);
+  }
+};
 onMounted(() => {
+  initAppConfigFn();
   // const language = globalStore.language ?? getBrowserLang();
   // i18n.locale.value = language;
   // globalStore.setGlobalState("language", language as LanguageType);

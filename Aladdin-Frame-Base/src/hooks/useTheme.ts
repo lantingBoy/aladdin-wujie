@@ -5,7 +5,8 @@ import { DEFAULT_PRIMARY } from "@/config";
 import { useGlobalStore } from "@/stores/modules/global";
 import { getLightColor, getDarkColor } from "@/utils/color";
 import { asideTheme, AsideThemeType } from "@/styles/theme/aside";
-
+import WujieVue from "wujie-vue3";
+const { bus } = WujieVue;
 /**
  * @description 全局主题 hooks
  * */
@@ -38,6 +39,8 @@ export const useTheme = () => {
       const primaryColor = isDark.value ? `${getDarkColor(val, i / 10)}` : `${getLightColor(val, i / 10)}`;
       document.documentElement.style.setProperty(`--el-color-primary-light-${i}`, primaryColor);
     }
+    console.log("xxxx=>>>>>");
+    bus.$emit("changeThemeFn", val);
     globalStore.setGlobalState("primary", val);
   };
 
